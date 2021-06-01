@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.mar.member">
+
+	<!-- doRegister -->
+	<insert id="doRegister" parameterType="MemberVO">
+		INSERT INTO member (
+		    member_id,
+		    pw,
+		    name,
+		    phone,
+		    address,
+		    auth,
+		    reg_dt,
+		    mod_dt
+		) VALUES (
+		    #{memberId},
+		    #{pw},
+		    #{name},
+		    #{phone},
+		    #{address},
+		    '0',
+		    SYSDATE,
+		    NULL
+		)	
+	</insert>
+	
+	<!-- doLoginCheck -->
+	<select id="doLoginCheck" parameterType="MemberVO" resultType="int">
+		SELECT COUNT(*) cnt
+		FROM member
+		WHERE member_id = #{memberId}
+		AND pw = #{pw}	
+	</select>
+	
+	<!-- doCheckDuplicatedId -->
+	<select id="doCheckDuplicatedId" parameterType="MemberVO" resultType="int">
+		SELECT COUNT(*) cnt
+		FROM member
+		WHERE member_id = #{memberId}
+	</select>
+	
+	<!-- doSelectOne -->
+	<select id="doSelectOne" parameterType="MemberVO" resultType="MemberVO">
+		SELECT
+		    member_id AS memberId,
+		    pw,
+		    name,
+		    phone,
+		    address,
+		    auth,
+		    reg_dt AS regDt,
+		    mod_dt AS modDt
+		FROM member
+		WHERE member_id = #{memberId}	
+	</select>
+	
+	<update id="doUpdate" parameterType="MemberVO">
+		UPDATE member
+		SET pw = #{pw},
+		    phone = #{phone},
+		    address = #{address}
+		WHERE member_id = #{memberId}
+	</update>
+
+</mapper>

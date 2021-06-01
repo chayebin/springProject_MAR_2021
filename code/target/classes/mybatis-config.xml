@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ <configuration>
+ 	<settings>
+ 		<setting name="mapUnderscoreToCamelCase" value="false"/>
+ 	</settings>
+ 	<typeAliases>
+ 		<!-- Domain에 별칭부여 VO를 간략히 사용 -->
+ 		<typeAlias type="com.sist.mar.cmn.Search" alias="Search"/>
+ 		
+ 		<!-- 추가한 사람: 재욱 -->
+ 		<typeAlias type="com.sist.mar.recipe.domain.RecipeVO" alias="RecipeVO"/>
+ 		<typeAlias type="com.sist.mar.image.domain.ImageVO" alias="ImageVO"/>
+ 		<typeAlias type="com.sist.mar.member.domain.MemberVO" alias="MemberVO"/>
+ 		<typeAlias type="com.sist.mar.recipe.domain.SimpleItemVO" alias="SimpleItemVO"/>
+ 		
+ 		<!-- 추가한 사람: 혜영 -->
+		<typeAlias type="com.sist.mar.main.domain.MainVO" alias="MainVO"/>
+		<typeAlias type="com.sist.mar.main.domain.CateSearchVO" alias="CateSearchVO"/>
+		<typeAlias type="com.sist.mar.code.domain.Code" alias="Code"/>
+		<typeAlias type="com.sist.mar.main.domain.MainRecipeVO" alias="MainRecipeVO"/>
+		
+		<!-- 추가한 사람 : 한솔 -->
+		<typeAlias type = "com.sist.mar.answer.domain.Answer" alias = "Answer" />
+		<typeAlias type="com.sist.mar.item.domain.Item" alias="Item"/>
+		
+		<!-- 추가한 사람 : 승호 -->
+ 		<typeAlias type = "com.sist.mar.review.domain.ReviewVO" alias = "ReviewVO" />
+ 		<typeAlias type = "com.sist.mar.question.domain.QuestionVO" alias = "QuestionVO" />
+
+		<!-- 추가한 사람 : 예빈 -->
+		<typeAlias type="com.sist.mar.wishitem.domain.Wishitem" alias="Wishitem"/>
+		<typeAlias type="com.sist.mar.cart.domain.Cart" alias="Cart"/>
+		<typeAlias type="com.sist.mar.order.domain.Ordering" alias="Ordering"/>
+		<typeAlias type="com.sist.mar.order.domain.Orderitem" alias="Orderitem"/>
+		<typeAlias type="com.sist.mar.payment.domain.Payment" alias="Payment"/>
+		
+ 	</typeAliases>
+ </configuration>

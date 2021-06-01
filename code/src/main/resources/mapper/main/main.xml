@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.mar.main">
+
+	<sql id="listOut">
+		<choose>
+			<when test=" '10' == listDiv "><!-- 카테고리별목록10 -->
+				AND t1.category_no= #{categoryNo}
+				ORDER BY t1.reg_dt desc
+			</when>
+			<when test=" '20' == listDiv "><!-- 신상품목록20 -->
+				ORDER BY t1.reg_dt desc
+			</when>
+			<when test=" '30' == listDiv "><!-- 베스트목록30 -->
+				ORDER BY t1.sales desc
+			</when>
+			<when test=" '40' == listDiv "><!-- 이벤트목록40-->
+				AND NOT t1.discount IS NULL
+				AND NOT t1.discount = 0
+	    		ORDER BY t1.reg_dt desc
+			</when>
+		</choose>
+	</sql>
+
+	<select id="doRetrieve" parameterType="CateSearchVO" resultType="MainVO">
+		SELECT A.*,B.*
+		FROM(
+		    SELECT g2.rnum as num,
+		    	   g2.item_no as itemNo,  
+		           g2.path,
+		           g2.name,
+		           g2.discount,
+		           g2.price,
+		           g2.final_price as finalPrice,
+		           g2.sales
+		    FROM(
+		    SELECT ROWNUM rnum,g1.*
+		    FROM(SELECT t1.item_no, 
+			    		t2.path || t2.save_name AS path,
+			            t1.name,
+			            t1.discount,
+			            t1.price,
+			            t1.final_price, 
+			            t1.sales
+		    FROM item t1, image t2
+		    WHERE t1.item_no=t2.from_no
+		    AND t2.main_image = 1
+		    AND t2.from_tb=1
+		    --listOut 구분
+		    <include refid="listOut"/>
+		    )g1
+		    <![CDATA[
+		    WHERE ROWNUM <= (#{pageSize}*(#{pageNum}-1)+#{pageSize})  
+		    )g2
+		    WHERE rnum >= (#{pageSize}*(#{pageNum}-1)+1)
+		    ]]>
+		    AND name LIKE '%'||#{searchWord}||'%'  
+		)A CROSS JOIN(
+		    SELECT COUNT(*) totalCnt
+		    FROM item
+		)B
+	</select>
+	
+	<select id="doRecipeRetrieve"  parameterType="CateSearchVO" resultType="MainRecipeVO">
+		SELECT A.*,B.*
+		FROM(
+		    SELECT 	g2.rnum as num,
+		            g2.recipe_no as recipeNo,
+					g2.path,
+					g2.reg_id as regId,
+					g2.title,
+					g2.read_cnt as readCnt,
+					g2.reg_dt as regDt,
+					g2.mod_dt as modDt
+		    FROM(
+		    SELECT ROWNUM rnum,g1.*
+		    FROM(SELECT t1.recipe_no,
+						t2.path||t2.save_name as path,
+						t1.reg_id,
+						t1.title,
+			            t1.read_cnt,
+			            t1.reg_dt,
+			            t1.mod_dt
+		    FROM recipe t1, image t2
+		    WHERE t1.recipe_no=t2.from_no
+		    AND t2.main_image = 1
+			AND t2.from_tb = 2
+		    ORDER BY t1.reg_dt desc
+		    )g1
+		    <![CDATA[
+		    WHERE ROWNUM <= (#{pageSize}*(#{pageNum}-1)+#{pageSize})  
+		    )g2
+		    WHERE rnum >= (#{pageSize}*(#{pageNum}-1)+1)
+		    ]]> 
+		    AND title LIKE '%'||#{searchWord}||'%'
+		)A CROSS JOIN(
+		    SELECT COUNT(*) totalCnt
+		    FROM recipe
+		)B
+	
+	</select>
+	
+</mapper>
+

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.mar.admin">
+	
+	<!-- com.sist.mar.admin. + 메소드 이름 -> 메소드 특정가능 -->
+	
+	<!-- doRetrieveReicpe -->
+	<select id="doRetrieveReicpe" parameterType="Search" resultType="RecipeVO">
+		SELECT
+			<choose>
+				<when test="searchDiv == 'regDt' and searchWord == 'desc'">
+					/*+ INDEX_DESC(recipe PK_RECIPE) */
+				</when>
+			</choose>        
+			<choose>
+				<when test="searchDiv == 'regDt' and searchWord == 'asc'">
+					/*+ INDEX_ASC(recipe PK_RECIPE) */
+				</when>
+			</choose>
+			<choose>
+				<when test="searchDiv == 'readCnt' and searchWord == 'desc'">
+					/*+ INDEX_DESC(recipe IDX_RECIPE_READ_CNT) */
+				</when>
+			</choose>
+			<choose>
+				<when test="searchDiv == 'readCnt' and searchWord == 'asc'">
+					/*+ INDEX_ASC(recipe IDX_RECIPE_READ_CNT) */
+				</when>
+			</choose>                                                                		
+		    recipe_no AS recipeNo,
+		    reg_id AS regId,
+		    title AS title,
+		    contents AS contents,
+		    read_cnt AS readCnt,
+		    ingredients AS ingredients,
+		    url_addr AS urlAddr,
+			CASE WHEN TO_CHAR(SYSDATE,'YYYY/MM/DD') = TO_CHAR(reg_dt,'YYYY/MM/DD')           
+				THEN TO_CHAR(reg_dt,'HH24:MI')                                               
+			ELSE TO_CHAR(reg_dt,'YYYY/MM/DD')                                                
+			END AS regDt,
+			CASE WHEN TO_CHAR(SYSDATE,'YYYY/MM/DD') = TO_CHAR(mod_dt,'YYYY/MM/DD')           
+				THEN TO_CHAR(mod_dt,'HH24:MI')                                               
+			ELSE TO_CHAR(mod_dt,'YYYY/MM/DD')                                                
+			END AS modDt
+		FROM recipe	
+	</select>
+	
+	<!-- doRetrieveItem -->
+	<select id="doRetrieveItem" parameterType="Search" resultType="Item">
+		SELECT
+			<choose>
+				<when test="searchDiv == 'regDt' and searchWord == 'desc'">
+					/*+ INDEX_DESC(item PK_ITEM) */
+				</when>
+			</choose>        
+			<choose>
+				<when test="searchDiv == 'regDt' and searchWord == 'asc'">
+					/*+ INDEX_ASC(item PK_ITEM) */
+				</when>
+			</choose>
+			<choose>
+				<when test="searchDiv == 'sales' and searchWord == 'desc'">
+					/*+ INDEX_DESC(item IDX_ITEM_SALES) */
+				</when>
+			</choose>
+			<choose>
+				<when test="searchDiv == 'sales' and searchWord == 'asc'">
+					/*+ INDEX_ASC(item IDX_ITEM_SALES) */
+				</when>
+			</choose>
+			<choose>
+				<when test="searchDiv == 'price' and searchWord == 'desc'">
+					/*+ INDEX_DESC(item IDX_ITEM_PRICE) */
+				</when>
+			</choose>
+			<choose>
+				<when test="searchDiv == 'price' and searchWord == 'asc'">
+					/*+ INDEX_ASC(item IDX_ITEM_PRICE) */
+				</when>
+			</choose>  			                                       		
+			item_no as itemNo,
+			name,
+			price,
+			production,
+			weight,
+			expired,
+			detail,
+			discount,
+			final_price as finalPrice,
+			sales,
+			category_no as categoryNo,
+			reg_id as regId,
+			CASE WHEN TO_CHAR(SYSDATE,'YYYY/MM/DD') = TO_CHAR(reg_dt, 'YYYY/MM/DD')           
+		    THEN TO_CHAR(reg_dt,'HH24:MI')                                               
+		    ELSE TO_CHAR(reg_dt,'YYYY/MM/DD') END regDt, 
+			CASE WHEN TO_CHAR(SYSDATE,'YYYY/MM/DD') = TO_CHAR(mod_dt, 'YYYY/MM/DD')           
+		    THEN TO_CHAR(mod_dt,'HH24:MI')                                               
+		    ELSE TO_CHAR(mod_dt,'YYYY/MM/DD') END modDt 
+		FROM item	
+	</select>
+	
+	<!-- doDiscountItem -->
+	<update id="doDiscountItem" parameterType="Item">
+		UPDATE item
+		SET discount = #{discount},
+			final_price = price*(100-#{discount})/100
+		WHERE item_no = #{itemNo}	
+	</update>
+	
+	<!-- doRetrieveOrdering -->
+	<select id="doRetrieveOrdering" parameterType="Search" resultType="Ordering">
+		SELECT
+			/*+ INDEX_DESC(ordering PK_ORDERING) */
+		    order_no AS orderNo,
+		    member_id AS memberId,
+		    price,
+		    name,
+		    phone,
+		    address,
+		    request,
+		    order_state AS orderState,
+			CASE WHEN TO_CHAR(SYSDATE,'YYYY/MM/DD') = TO_CHAR(order_date,'YYYY/MM/DD')           
+				THEN TO_CHAR(order_date,'HH24:MI')                                               
+			ELSE TO_CHAR(order_date,'YYYY/MM/DD')                                                
+			END AS orderDate
+		FROM ordering
+		WHERE 1 = 1 
+		<choose>
+			<when test="searchDiv == 'orderState'">
+				AND order_state = #{searchWord}
+			</when>
+		</choose>                                                                   		
+	</select>
+	
+	<!-- doRejectCancel -->
+	<update id="doRejectCancel" parameterType="Ordering">
+		UPDATE ordering
+		SET order_state = 1
+		WHERE order_no = #{orderNo}	
+	</update>
+	
+	<!-- doReturnCancel -->
+	<update id="doReturnCancel" parameterType="Ordering">
+		UPDATE ordering
+		SET order_state = 2
+		WHERE order_no = #{orderNo}	
+	</update>	
+		
+	<!-- doApproveCancel -->
+	<update id="doApproveCancel" parameterType="Ordering">
+		UPDATE ordering
+		SET order_state = 3
+		WHERE order_no = #{orderNo}	
+	</update>
+	
+	<!-- doRejectCancelPayment -->
+	<update id="doRejectCancelPayment" parameterType="Ordering">
+		UPDATE payment
+		SET state = '1'
+		WHERE order_no = #{orderNo}		
+	</update>
+	
+	<!-- doReturnCancelPayment -->
+	<update id="doReturnCancelPayment" parameterType="Ordering">
+		UPDATE payment
+		SET state = '1'
+		WHERE order_no = #{orderNo}		
+	</update>
+	
+	<!-- doApproveCancelPayment -->
+	<update id="doApproveCancelPayment" parameterType="Ordering">
+		UPDATE payment
+		SET state = '2'
+		WHERE order_no = #{orderNo}	
+	</update>
+	
+	<!-- doSelectPaymentFromOrdering -->
+	<select id="doSelectPaymentFromOrdering" parameterType="Ordering" resultType="Payment">
+		SELECT
+		    pay_no AS payNo,
+		    order_no AS orderNo,
+		    state,
+		    datetime
+		FROM payment
+		WHERE order_no = #{orderNo}	
+	</select>
+	
+	<!-- doRetrieveMember -->
+	<select id="doRetrieveMember" resultType="MemberVO">
+		SELECT
+		    member_id AS memberId,
+		    pw,
+		    name,
+		    phone,
+		    address,
+		    auth,
+		    reg_dt AS regDt,
+		    mod_dt AS modDt
+		FROM member
+		WHERE 1 = 1
+		<choose>
+			<when test="searchDiv == 'auth'">
+				AND auth = #{searchWord}
+			</when>
+		</choose>			
+	</select>
+	
+</mapper>

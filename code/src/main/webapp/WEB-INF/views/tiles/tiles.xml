@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC 
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	<!--▶layout01 -->
+	<definition name="first-layout" template="/WEB-INF/views/tiles/layouts/layout01.jsp">
+		<put-attribute name="title" value=""/>
+		<put-attribute name="header" value="/WEB-INF/views/tiles/template/header.jsp"/>
+		<put-attribute name="menubar" value="/WEB-INF/views/tiles/template/menubar.jsp"/>
+		<put-attribute name="container" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/template/footer.jsp"/>
+	</definition>
+	
+	<!-- layout01 동적화면 적용 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+	
+	<!-- main.jsp -->
+	<definition name="main/*" extends="first-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/main/{1}.jsp"/>
+	</definition>
+
+	<!-- 예빈님 화면 -->
+	<!-- cart_list.jsp -->
+	<definition name="*/cart_list" extends="first-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/cart_list.jsp"/>
+	</definition>
+	<!-- order_form.jsp -->
+	<definition name="*/order_form" extends="first-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/order_form.jsp"/>
+	</definition>
+	<!-- payment_detail.jsp -->
+	<definition name="*/payment_detail" extends="first-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/payment_detail.jsp"/>
+	</definition>
+	
+	<!-- 한솔님 화면 -->
+	<!-- item_detail.jsp -->
+ 	<definition name="*/item_detail_review" extends="first-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/item_detail_review.jsp"/>
+	</definition> 
+	
+	<!-- 재욱님 화면 -->
+	<!-- recipe_detail.jsp -->
+	<definition name="*/recipe_detail" extends="first-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/recipe_detail.jsp"/>
+	</definition>
+	
+	<!--// layout01 동적화면 적용 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+
+
+
+	<!--▶layout02 -->
+	<definition name="second-layout" template="/WEB-INF/views/tiles/layouts/layout02.jsp">
+		<put-attribute name="title" value=""/>
+		<put-attribute name="header" value="/WEB-INF/views/tiles/template/header.jsp"/>
+		<put-attribute name="menubar" value="/WEB-INF/views/tiles/template/menubar.jsp"/>
+		<put-attribute name="sidebar" value="/WEB-INF/views/tiles/template/sidebar.jsp"/>
+		<put-attribute name="container" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/template/footer.jsp"/>
+	</definition>
+	
+	<!--▶layout04 -->
+	<definition name="fourth-layout" template="/WEB-INF/views/tiles/layouts/layout04.jsp">
+		<put-attribute name="title" value=""/>
+		<put-attribute name="header" value="/WEB-INF/views/tiles/template/header.jsp"/>
+		<put-attribute name="menubar" value="/WEB-INF/views/tiles/template/menubar.jsp"/>
+		<put-attribute name="sidebar02" value="/WEB-INF/views/tiles/template/sidebar02.jsp"/>
+		<put-attribute name="container" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/template/footer.jsp"/>
+	</definition>
+	
+	<!-- layout02 동적화면 적용 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+	
+	<!-- 예빈님 -->
+	<!-- wishitem_list.jsp -->
+	<definition name="*/wishitem_list" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/wishitem_list.jsp"/>
+	</definition> 
+	<!-- mypage.jsp -->
+	<definition name="*/mypage" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/mypage.jsp"/>
+	</definition> 
+	
+	<!-- 승호님 -->
+	<!-- question_list -->
+	<definition name="*/question_list" extends="fourth-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/question_list.jsp"/>
+	</definition>
+	<!-- question_detail.answer -->
+	<definition name="*/question_detail_answer" extends="fourth-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/question_detail_answer.jsp"/>
+	</definition>
+	<!-- question_mng -->
+	<definition name="*/question_mng" extends="fourth-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/question_mng.jsp"/>
+	</definition>
+	<!-- question_reg -->
+	<definition name="*/question_reg" extends="fourth-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/question_reg.jsp"/>
+	</definition>
+	<!-- ordering_list.jsp -->
+	<definition name="*/ordering_list" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/ordering_list.jsp"/>
+	</definition>
+	<!-- ordering_item_detail.jsp -->
+	<definition name="*/ordering_item_detail" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/ordering_item_detail.jsp"/>
+	</definition>
+	<!-- review_detail.jsp -->
+	<definition name="*/review_detail" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/review_detail.jsp"/>
+	</definition>
+	<!-- review_list.jsp -->
+	<definition name="*/review_list" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/review_list.jsp"/>
+	</definition>
+	<!-- review_mng.jsp -->
+	<definition name="*/review_mng" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/review_mng.jsp"/>
+	</definition>
+	<!-- review_reg.jsp -->
+	<definition name="*/review_reg" extends="second-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/review_reg.jsp"/>
+	</definition>	
+		
+	<!--// layout02 동적화면 적용 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+	
+	
+	<!--▶layout03 -->
+	<definition name="third-layout" template="/WEB-INF/views/tiles/layouts/layout03.jsp">
+		<put-attribute name="title" value=""/>
+		<put-attribute name="header" value="/WEB-INF/views/tiles/template/header.jsp"/>
+		<put-attribute name="container" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/template/footer.jsp"/>
+	</definition>
+	
+	<!-- layout03 동적화면 적용 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+	
+		
+	<!-- 재욱님 화면 -->
+	<!-- admin_main.jsp -->
+<!-- 	<definition name="*/admin_main" extends="third-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/admin_main.jsp"/>
+	</definition> -->
+	
+	<!-- recipe_reg.jsp -->
+ 	<definition name="*/recipe_reg" extends="third-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/recipe_reg.jsp"/>
+	</definition>
+	
+	<!-- recipe_mod.jsp -->
+ 	<definition name="*/recipe_mod" extends="third-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/recipe_mod.jsp"/>
+	</definition>
+	
+	<!-- item_reg.jsp -->
+ 	<definition name="*/item_reg" extends="third-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/item_reg.jsp"/>
+	</definition>
+	
+	<!-- item_mod.jsp -->
+ 	<definition name="*/item_mod" extends="third-layout">
+		<put-attribute name="title" value="마킷:: 봄날의 장터"/>
+		<put-attribute name="container" value="/WEB-INF/views/{1}/item_mod.jsp"/>
+	</definition>
+	
+	<!--// layout03 동적화면 적용 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+
+	
+
+
+</tiles-definitions>

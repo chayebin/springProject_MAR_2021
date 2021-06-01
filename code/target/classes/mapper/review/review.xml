@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.mar.review">
+
+	<!-- 
+		Mybatis 주요 개념
+	
+		parameterType   : 변수가 어디서 기원했는지에 대한 내용
+		resultType 		: 결과값의 타입  
+		resultMap		: 참고한 resultMap 
+	 -->
+
+
+	<!-- resultMap(SQL의 AS xxx를 안해도 된다) : JAVA VO의 PK인 id property, 그 외의 값인 result property를 DB의 테이블의 칼럼인 column 값에 대응시켜주는 편리한 녀석  -->
+	<!-- id PK property = VO의 PK 속성, column = 테이블 칼럼 -->
+	<resultMap type="ReviewVO" id="reviewResult">
+	
+		<id 	property="reviewNo" 	 column="review_no" />		
+		<result property="memberId" 	 column="member_id"/>
+		<result property="orderitemNo"	 column="orderitem_no"/>
+		<result property="title"  		 column="title"/>
+		<result property="contents" 	 column="contents"/>
+		<result property="readCnt" 	 	 column="read_cnt"/>
+		<result property="regDt" 		 column="reg_dt"/>
+		
+	</resultMap>
+	
+	
+	<!-- doRetrieve 카테고리 : 10 전체검색용, 20 내가 쓴 후기  -->
+	<!-- sql : 해당 element는 다른 구문에서 재사용 가능한 sql구문을 정의할 때 사용된다
+		 where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
+	<sql id="searchCondition">
+		<choose>
+			<!-- 상품상세페이지용 -->
+			<when test=" '10'  == searchDiv ">
+				      , orderitem Y
+				      , item Z
+				WHERE  X.orderitem_no = Y.orderitem_no
+				AND    Z.item_no = Y.item_no
+				AND    Y.item_no = #{searchWord}
+			</when>
+			
+			<!-- 마이페이지용 -->
+			<when test=" '20'  == searchDiv ">
+				WHERE member_id = #{searchWord}    
+			</when>
+		</choose> 
+	</sql>
+	
+	
+	<!-- doRetrieve -->
+	<select id="doRetrieve" parameterType="Search" resultType="ReviewVO">
+
+		SELECT t2.rnum 			AS num,   
+		       t2.review_no 	AS reviewNo, 		                                                                                                     
+		       t2.member_id 	AS memberId, 		                                                                                                       
+		       t2.orderitem_no 	AS orderitemNo,                                                                                                       
+		       t2.title			AS title,                                                                                        				
+		       t2.contents		AS contents, 	                                                                                   			
+		       t2.read_cnt		AS readCnt,                                                                                                                                                                                                                                                                                                                                                                              
+		       DECODE(TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(t2.reg_dt, 'YYYYMMDD')
+		                  , TO_CHAR(t2.reg_dt, 'HH24:MI')             
+		                  , TO_CHAR(t2.reg_dt, 'YYYYMMDD')) AS regDt,
+		       t2.totalCnt      
+		FROM(                                                                                                                
+		     SELECT ROWNUM rnum                                                                                                 
+		             , t1.*     
+		             , COUNT(*) OVER() totalCnt
+		     FROM(
+		          SELECT X.*                                                                                                      
+		          FROM review X     
+				  <include refid="searchCondition" />    
+		          ORDER BY X.review_no DESC
+		          ) t1 
+		     )t2 
+		WHERE rnum BETWEEN #{pageSize} * (#{pageNum} - 1) + 1 AND #{pageSize} * (#{pageNum} - 1) + #{pageSize}		
+		  
+
+	   <!--  WHERE rnum BETWEEN 10 * (1 - 1) + 1 AND 10 * (1 - 1) + 10 -->                                                                                                                                                                          															
+      
+	</select>
+	
+	
+	<!-- doSelectOne (uId는 oracle 자체 키워드니 ""를 꼭 써야함)-->
+	<select id="doSelectOne" parameterType="ReviewVO" resultMap="reviewResult">
+		
+		SELECT review_no, 	            					  
+			   member_id,	                					  
+			   orderitem_no, 			  
+			   title,			                   				  
+			   contents,		                   				  
+			   read_cnt,		 	                   				  	    				  
+			   TO_CHAR(reg_dt, 'YYYY/MM/DD HH24MISS') reg_dt  	    			  
+		FROM   review                  					  
+		WHERE review_no = #{reviewNo}
+		ORDER BY review_no
+		
+	</select>
+	
+	
+	<!-- doSelectOne (uId는 oracle 자체 키워드니 ""를 꼭 써야함)-->
+	<select id="doSelectMyOne" parameterType="Orderitem" resultMap="reviewResult">
+		
+		SELECT A.review_no, 	            					  
+			   A.member_id,	                					  
+			   A.orderitem_no, 			  
+			   A.title,			                   				  
+			   A.contents,		                   				  
+			   A.read_cnt,		 	                   				  	    				  
+			   TO_CHAR(A.reg_dt, 'YYYY/MM/DD HH24MISS') reg_dt  	    			  
+		FROM   review A, orderitem B                 					  
+		WHERE B.orderitem_no = #{orderitemNo}
+		AND   B.orderitem_no = A.orderitem_no
+		
+	</select>
+	
+	
+	<!-- doReviewStateInsert -->
+	<update id="doReviewStateInsert" parameterType="Orderitem">
+	
+		UPDATE orderitem
+		SET    review_state = 2
+		WHERE  orderitem_no = #{orderitemNo}                
+	
+	</update>
+	
+	<!-- doReviewStateDelete -->
+	<update id="doReviewStateDel" parameterType="Orderitem">
+	
+		UPDATE orderitem
+		SET    review_state = 1
+		WHERE  orderitem_no = #{orderitemNo}                
+	
+	</update>
+	
+	<!-- doReadCnt -->
+	<update id="doReadCnt" parameterType="ReviewVO">
+	
+		UPDATE review                          
+		SET read_cnt = NVL(read_cnt, 0) + 1   
+		WHERE review_no = #{reviewNo}                       
+	
+	</update>
+	
+	
+	<!-- doUpdate -->
+	<update id = "doUpdate" parameterType="ReviewVO">
+		UPDATE review
+		SET   title = #{title}
+		    , contents = #{contents}
+		    , reg_dt = SYSDATE
+		WHERE review_no = #{reviewNo}
+		
+	</update>
+	
+	
+	<!-- doDelete -->
+	<delete id = "doDelete" parameterType="ReviewVO">
+	
+		DELETE FROM review
+		WHERE review_no = #{reviewNo}
+	
+	</delete>
+
+
+	<!-- doInsert -->	
+	<insert id = "doInsert" parameterType="ReviewVO">
+		
+		INSERT INTO review(	review_no
+							, member_id
+							, orderitem_no
+							, title
+							, contents
+							, reg_dt
+		)VALUES(
+				  REVIEW_SEQ.NEXTVAL
+				, #{memberId}
+				, #{orderitemNo} 		
+				, #{title} 	
+				, #{contents} 	
+				, SYSDATE
+		)
+	
+	</insert>
+
+</mapper>
